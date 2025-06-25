@@ -140,7 +140,9 @@ const Navbar = () => {
       ) : (
         <div className="flex justify-center items-center gap-4">
           <UserButton />
-          <Button>Dashboard</Button>
+          <Link href={"/dashboard"}>
+            <Button>Dashboard</Button>
+          </Link>
         </div>
       )}
     </nav>
