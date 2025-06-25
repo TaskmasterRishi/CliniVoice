@@ -1,11 +1,13 @@
 "use client";
 
-
 import { FeaturesBentoGrid } from "@/components/BentoGrid/FeaturesBentoGrid";
+import { Button } from "@/components/ui/button";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home () {
+export default function Home() {
   return (
     <div className="relative mx-2 lg:mx-10 my-10 flex flex-col items-center justify-center">
       <Navbar />
@@ -51,28 +53,32 @@ export default function Home () {
           }}
           className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400"
         >
-         CliniVoice is a next-generation AI-powered voice agent built specifically for healthcare. Designed to streamline clinical workflows and enhance patient care, CliniVoice listens, understands, and responds in real-time—making medical communication faster, safer, and smarter.
+          CliniVoice is a next-generation AI-powered voice agent built
+          specifically for healthcare. Designed to streamline clinical workflows
+          and enhance patient care, CliniVoice listens, understands, and
+          responds in real-time—making medical communication faster, safer, and
+          smarter.
         </motion.p>
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            duration: 0.3,
-            delay: 1,
-          }}
-          className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
-        >
-          <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Explore Now
-          </button>
-          <button className="w-60 transform rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900">
-            Contact Support
-          </button>
-        </motion.div>
+        <Link href={"/sign-in"}>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.3,
+              delay: 1,
+            }}
+            className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
+          >
+            <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+              Get Started
+            </button>
+          </motion.div>
+        </Link>
+
         <motion.div
           initial={{
             opacity: 0,
@@ -99,21 +105,44 @@ export default function Home () {
           </div>
         </motion.div>
       </div>
-      <FeaturesBentoGrid/>
+      <FeaturesBentoGrid />
     </div>
   );
 }
 
 const Navbar = () => {
+  const { user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return (
+      <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
+        <div className="flex items-center gap-2">
+          <Image src="/logo.png" alt="CliniVoice Logo" width={50} height={50} />
+          <h1 className="text-base font-bold md:text-2xl">CliniVoice</h1>
+        </div>
+        {/* Render nothing until authentication state is confirmed */}
+      </nav>
+    );
+  }
+
   return (
     <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
       <div className="flex items-center gap-2">
-        <Image src="/logo.png" alt="CliniVoice Logo" width={50} height={50}/>
+        <Image src="/logo.png" alt="CliniVoice Logo" width={50} height={50} />
         <h1 className="text-base font-bold md:text-2xl">CliniVoice</h1>
       </div>
-      <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-        Login
-      </button>
+      {!user ? (
+        <Link href={"/sign-in"}>
+          <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+            Login
+          </button>
+        </Link>
+      ) : (
+        <div className="flex justify-center items-center gap-4">
+          <UserButton />
+          <Button>Dashboard</Button>
+        </div>
+      )}
     </nav>
   );
 };
