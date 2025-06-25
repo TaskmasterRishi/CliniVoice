@@ -1,8 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { ClipboardPlus } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
+import AddNewSessionDialog from "./AddNewSessionDialog";
 
 const HistoryList = () => {
   const [historyList, setHistoryList] = useState([]);
@@ -16,10 +15,7 @@ const HistoryList = () => {
           <div className="flex flex-col justify-center items-center gap-2">
             <h2 className="font-bold text-xl">No recent Consultations</h2>
             <p>It looks like you havn't consultated to any doctors yet!</p>
-            <Button>
-              <ClipboardPlus />
-                Start a Consultation
-            </Button>
+            <AddNewSessionDialog/>
           </div>
         </div>
       ) : (

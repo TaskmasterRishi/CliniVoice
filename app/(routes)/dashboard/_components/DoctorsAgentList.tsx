@@ -2,6 +2,7 @@ import { AIDoctorAgents } from '@/shared/list'
 import React from 'react'
 import { CardContainer, CardBody } from './AiDoctorAgentCard'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 const DoctorsAgentList = () => {
   return (
@@ -9,18 +10,22 @@ const DoctorsAgentList = () => {
         <div>
             <h2 className='text-2xl font-semibold'>AI Specialist Doctors Agent</h2>
         </div>
-        <div className='grid grid-cols-5 gap-5'>
+        <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5'>
             {AIDoctorAgents.map((doctor, index) => (
                 <CardContainer key={index} className='max-w-xl'>
-                    <CardBody className="bg-white rounded-lg flex flex-col shadow-xl border-3 h-fit p-2">
-                        <img 
+                    <CardBody className="bg-white rounded-lg flex flex-col shadow-xl border-3 h-full p-2">
+                        <Image
                             src={doctor.image} 
                             alt={doctor.specialist} 
-                            className="w-full h-80 object-cover object-top rounded-t-sm mb-4"
+                            width={200}
+                            height={300}
+                            className="w-full h-[230px] md:h-[300px] object-cover object-top rounded-t-sm mb-4"
                         />
-                        <h3 className="text-xl font-bold">{doctor.specialist}</h3>
-                        <p className="text-gray-600">{doctor.description}</p>
-                        <Button className='mt-2'>Consult Doctor</Button>
+                        <div className="flex flex-col flex-grow">
+                            <h3 className="text-xl font-bold">{doctor.specialist}</h3>
+                            <p className="text-gray-600 flex-grow">{doctor.description}</p>
+                            <Button className='mt-2'>Consult Doctor</Button>
+                        </div>
                     </CardBody>
                 </CardContainer>
             ))}
