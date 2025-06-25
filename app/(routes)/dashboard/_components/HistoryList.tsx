@@ -7,7 +7,7 @@ import React, { useState } from "react";
 const HistoryList = () => {
   const [historyList, setHistoryList] = useState([]);
   return (
-    <div className="mt-10">
+    <div>
       {historyList.length == 0 ? (
         <div className="flex items-center justify-center gap-4 p-10 bg-gray-100 shadow-md rounded-2xl">
           <div>

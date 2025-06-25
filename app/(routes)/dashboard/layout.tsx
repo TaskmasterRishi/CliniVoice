@@ -9,7 +9,7 @@ const DashboardLayout = ({
   return (
     <div>
       <AppHeader />
-      <div className="px-10 md:px-20">{children}</div>
+      <div className="">{children}</div>
     </div>
   );
 };
