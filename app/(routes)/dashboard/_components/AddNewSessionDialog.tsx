@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -17,14 +17,14 @@ import axios from "axios";
 const AddNewSessionDialog = () => {
   const [note, setNote] = useState<string>();
   const [loading, setLoading] = useState(false);
-  setLoading(true);
-  const onClickNext = () => {
-    const result = await axios.post('/api/suggest-doctors',{
-      notes: note
+  const onClickNext = async () => {
+    setLoading(true);
+    const result = await axios.post("/api/suggest-doctors", {
+      notes: note,
     });
     console.log(result.data);
     setLoading(false);
-  }
+  };
 
   return (
     <Dialog>
@@ -39,7 +39,9 @@ const AddNewSessionDialog = () => {
           <DialogTitle>Add Basic Details</DialogTitle>
           <DialogDescription asChild>
             <div className="space-y-4">
-              <h2 className="text-sm font-medium">Add symptoms or any other details</h2>
+              <h2 className="text-sm font-medium">
+                Add symptoms or any other details
+              </h2>
               <Textarea
                 placeholder="Describe the symptoms or details here..."
                 className="min-h-[150px]"
@@ -50,7 +52,9 @@ const AddNewSessionDialog = () => {
         </DialogHeader>
         <DialogFooter className="gap-2">
           <Button variant="outline">Cancel</Button>
-          <Button disabled={!note}>next <ArrowRight/></Button>
+          <Button disabled={!note} onClick={() => onClickNext()}>
+            next <ArrowRight />
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
