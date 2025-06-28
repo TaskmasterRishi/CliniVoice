@@ -22,8 +22,8 @@ const DoctorsAgentList = () => {
                             className="w-full h-[230px] md:h-[300px] object-cover object-top rounded-t-sm mb-4"
                         />
                         <div className="flex flex-col flex-grow">
-                            <h3 className="text-xl font-bold">{doctor.specialist}</h3>
-                            <p className="text-gray-600 flex-grow">{doctor.description}</p>
+                            <h3 className="text-md md:text-xl font-bold">{doctor.specialist}</h3>
+                            <p className="rext-xs md:text-lg text-gray-600 flex-grow line-clamp-2">{doctor.description}</p>
                             <Button className='mt-2'>Consult Doctor</Button>
                         </div>
                     </CardBody>
