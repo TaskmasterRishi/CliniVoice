@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Doctor } from "../../_components/AddNewSessionDialog";
-import { Circle, LoaderCircle, PhoneCall, PhoneOff } from "lucide-react";
+import { LoaderCircle, PhoneCall, PhoneOff } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +27,6 @@ type SessionDetail = {
   createdBy: string;
 };
 
-
 const hoverVariants = {
   hover: {
     scale: 1.02,
@@ -35,12 +34,38 @@ const hoverVariants = {
   },
 };
 
+type message = {
+  role: string;
+  text: string;
+};
+
 const MedicalVoiceAgent = () => {
   const { sessionId } = useParams();
   const [sessionDetail, setSessionDetail] = useState<SessionDetail>();
   const [isLoading, setIsLoading] = useState(false);
-  const [callStarted, setCallStarted] = useState(false);
-  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY || "");
+  const [isConnected, setIsConnected] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [vapiInstance, setVapiInstance] = useState<Vapi | null>(null);
+  const [currentRole, setCurrentRole] = useState<string | null>();
+  const [liveTranscript, setLiveTranscript] = useState<string>();
+  const [messages, setMessages] = useState<message[]>([]);
+  const [isStartingCall, setIsStartingCall] = useState(false);
+  const [callDuration, setCallDuration] = useState<number>(0);
+  const [totalCallDuration, setTotalCallDuration] = useState<number>(0);
+
+  useEffect(() => {
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      if (args[0]?.includes?.("Ignoring settings for browser- or platform-unsupported input processor(s): audio")) {
+        return; // Ignore this specific warning
+      }
+      originalConsoleError(...args);
+    };
+
+    return () => {
+      console.error = originalConsoleError;
+    };
+  }, []);
 
   useEffect(() => {
     if (sessionId) {
@@ -48,10 +73,79 @@ const MedicalVoiceAgent = () => {
     }
   }, [sessionId]);
 
+  useEffect(() => {
+    const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY || "");
+    setVapiInstance(vapi);
+
+    vapi.on("call-start", () => {
+      setIsConnected(true);
+    });
+
+    vapi.on("call-end", () => {
+      setIsConnected(false);
+      setIsSpeaking(false);
+    });
+
+    vapi.on("speech-start", () => {
+      setIsSpeaking(true);
+      setCurrentRole("assistant");
+    });
+
+    vapi.on("speech-end", () => {
+      setIsSpeaking(false);
+      setCurrentRole("user");
+    });
+
+    vapi.on("message", (message) => {
+      if (message.type === "transcript") {
+        const { role, transcriptType, transcript } = message;
+        if (transcriptType === "partial") {
+          setLiveTranscript(transcript);
+          setCurrentRole(role);
+        } else if (transcriptType === "final") {
+          // Final transcript
+          setMessages((prev) => [...(prev || []), { role, text: transcript }]);
+          setLiveTranscript("");
+          setCurrentRole(null);
+        }
+        console.log(`${message.role} : ${message.transcript}`);
+      }
+    });
+
+    vapi.on("error", (error) => {
+      console.error("Vapi error:", error);
+    });
+
+    return () => {
+      vapi.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isConnected) {
+      interval = setInterval(() => {
+        setCallDuration((prev) => prev + 1);
+        setTotalCallDuration((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (isConnected) {
+      setCallDuration(0);
+    }
+  }, [isConnected]);
+
   const getSessionDetail = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`/api/session-chat?sessionId=${sessionId}`);
+      const result = await axios.get(
+        `/api/session-chat?sessionId=${sessionId}`
+      );
       setSessionDetail(result.data);
     } catch (error) {
       console.error("Error fetching session details:", error);
@@ -61,18 +155,20 @@ const MedicalVoiceAgent = () => {
   };
 
   const startCall = () => {
-    vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "");
-    vapi.on("call-start", () => {
-      setCallStarted(true);
-    });
-    vapi.on("call-end", () => {
-      setCallStarted(false);
-    });
-    vapi.on("message", (message) => {
-      if (message.type === "transcript") {
-        console.log(`${message.role}: ${message.transcript}`);
-      }
-    });
+    if (vapiInstance) {
+      setIsStartingCall(true);
+      vapiInstance.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "").catch((error) => {
+        console.error("Failed to start call:", error);
+      }).finally(() => {
+        setIsStartingCall(false);
+      });
+    }
+  };
+
+  const stopCall = () => {
+    if (vapiInstance) {
+      vapiInstance.stop();
+    }
   };
 
   return (
@@ -83,14 +179,28 @@ const MedicalVoiceAgent = () => {
             Medical Consultation
           </h1>
           <div className="flex items-center gap-2 px-3 py-1 border border-gray-200 rounded-full w-fit text-sm bg-gray-50">
-            {callStarted ? 
-            <Circle className="h-4 w-4 text-green-500 fill-green-500"/> :
-            <LoaderCircle className="h-4 w-4 text-red-500 animate-spin"/>  
-          }
-            <span className="text-gray-600">{callStarted? 'Connected...' : 'Not Connected...'}</span>
+            {isConnected ? (
+              <div className="flex items-center gap-1">
+                <div
+                  className={`h-2 w-2 rounded-full ${
+                    isSpeaking ? "bg-red-500 animate-pulse" : "bg-green-500"
+                  }`}
+                />
+                <span className="text-gray-600">
+                  {isSpeaking ? "Speaking..." : "Connected"}
+                </span>
+              </div>
+            ) : (
+              <div className="flex gap-2 items-center justify-center">
+                <LoaderCircle className="h-4 w-4 text-red-500 animate-spin" />
+                <p className="text-red-400">Not Connected</p>
+              </div>
+            )}
           </div>
         </div>
-        <div className="text-lg font-medium text-gray-700">00:00</div>
+        <div className="text-lg font-medium text-gray-700">
+          {`${Math.floor(totalCallDuration / 60)}:${(totalCallDuration % 60).toString().padStart(2, '0')}`}
+        </div>
       </div>
 
       {isLoading ? (
@@ -129,24 +239,36 @@ const MedicalVoiceAgent = () => {
 
             <Card className="w-full">
               <CardHeader>
-                <CardTitle className="text-lg">Your consult</CardTitle>
+                <CardTitle className="text-lg text-center">
+                  Your consult
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="text-center">
                 <p className="text-gray-600 text-sm">
                   {sessionDetail?.notes || "No notes available"}
                 </p>
               </CardContent>
             </Card>
 
-            {!callStarted ? (
+            {!isConnected ? (
               <motion.div variants={hoverVariants} whileHover="hover">
-                <Button className="w-full" size="lg" onClick={startCall}>
-                  <PhoneCall className="h-4 w-4 mr-2" /> Start Call
+                <Button className="w-full" size="lg" onClick={startCall} disabled={isStartingCall}>
+                  {isStartingCall ? (
+                    <LoaderCircle className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <PhoneCall className="h-4 w-4 mr-2" />
+                  )}
+                  {isStartingCall ? "Starting..." : "Start Call"}
                 </Button>
               </motion.div>
             ) : (
               <motion.div variants={hoverVariants} whileHover="hover">
-                <Button variant={"destructive"} className="w-full" size="lg">
+                <Button
+                  variant={"destructive"}
+                  className="w-full"
+                  size="lg"
+                  onClick={stopCall}
+                >
                   <PhoneOff className="h-4 w-4 mr-2" /> Disconnect
                 </Button>
               </motion.div>
@@ -157,11 +279,46 @@ const MedicalVoiceAgent = () => {
             <CardHeader>
               <CardTitle>Consultation</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center h-[40vh] md:h-[65vh] gap-4">
-              <div className="text-center space-y-2">
-                <p className="text-gray-400 text-sm">Assistance message</p>
-                <p className="text-sm text-gray-600">User message</p>
-              </div>
+            <CardContent className="flex flex-col items-center justify-center h-[40vh] md:h-[65vh]">
+              {messages.length === 0 ? (
+                <p className="text-gray-400 text-sm">
+                  No transcript displayed.
+                </p>
+              ) : (
+                <div className="w-full space-y-4">
+                  {messages?.map((msg, index) => (
+                    <div
+                      key={index}
+                      className={`flex ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
+                    >
+                      <div
+                        className={`max-w-xs md:max-w-md p-3 rounded-lg ${
+                          msg.role === "assistant"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        <p className="font-medium">{msg.role}:</p>
+                        <p>{msg.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {liveTranscript && liveTranscript?.length > 0 && (
+                    <div className={`flex ${currentRole === "assistant" ? "justify-start" : "justify-end"}`}>
+                      <div
+                        className={`max-w-xs md:max-w-md p-3 rounded-lg ${
+                          currentRole === "assistant"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        <p className="font-medium">{currentRole}:</p>
+                        <p>{liveTranscript}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
