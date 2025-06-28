@@ -17,8 +17,9 @@ import axios from "axios";
 import { CardBody, CardContainer } from "./AiDoctorAgentCard";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
-interface Doctor {
+export type Doctor = {
   id: number;
   image: string;
   specialist: string;
@@ -35,6 +36,7 @@ const AddNewSessionDialog = () => {
     null
   );
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const router = useRouter();
 
   const onClickNext = async () => {
     setLoading(true);
@@ -62,6 +64,7 @@ const AddNewSessionDialog = () => {
     if (result.data?.sessionId) {
       console.log(result.data?.sessionId);
       //route to conversation screen
+      router.push("/dashboard/medical-agent/" + result.data.sessionId);
     }
     setLoading(false);
   };
@@ -193,7 +196,7 @@ const AddNewSessionDialog = () => {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                   Start Consultation <ArrowRight/>
+                    Start Consultation <ArrowRight />
                   </>
                 )}
               </Button>
