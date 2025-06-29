@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Doctor } from "../../_components/AddNewSessionDialog";
 import { LoaderCircle, PhoneCall, PhoneOff } from "lucide-react";
@@ -16,8 +16,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import Vapi from "@vapi-ai/web";
 import { motion } from "framer-motion";
+import { toast, Toaster } from "sonner";
 
-type SessionDetail = {
+export type SessionDetail = {
   id: number;
   notes: string;
   sessionId: string;
@@ -50,13 +51,18 @@ const MedicalVoiceAgent = () => {
   const [liveTranscript, setLiveTranscript] = useState<string>();
   const [messages, setMessages] = useState<message[]>([]);
   const [isStartingCall, setIsStartingCall] = useState(false);
+  const [isEndingCall, setIsEndingCall] = useState(false);
   const [callDuration, setCallDuration] = useState<number>(0);
-  const [totalCallDuration, setTotalCallDuration] = useState<number>(0);
+  const router = useRouter();
 
   useEffect(() => {
     const originalConsoleError = console.error;
     console.error = (...args) => {
-      if (args[0]?.includes?.("Ignoring settings for browser- or platform-unsupported input processor(s): audio")) {
+      if (
+        args[0]?.includes?.(
+          "Ignoring settings for browser- or platform-unsupported input processor(s): audio"
+        )
+      ) {
         return; // Ignore this specific warning
       }
       originalConsoleError(...args);
@@ -126,7 +132,6 @@ const MedicalVoiceAgent = () => {
     if (isConnected) {
       interval = setInterval(() => {
         setCallDuration((prev) => prev + 1);
-        setTotalCallDuration((prev) => prev + 1);
       }, 1000);
     }
     return () => {
@@ -155,20 +160,52 @@ const MedicalVoiceAgent = () => {
   };
 
   const startCall = () => {
-    if (vapiInstance) {
-      setIsStartingCall(true);
-      vapiInstance.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "").catch((error) => {
+    if (!vapiInstance) {
+      console.error("Vapi instance not initialized");
+      return;
+    }
+
+    if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
+      console.error("Vapi public key is not set");
+      return;
+    }
+
+    setIsStartingCall(true);
+    vapiInstance
+      .start(sessionDetail?.selectedDoctor.modelId)
+      .catch((error) => {
         console.error("Failed to start call:", error);
-      }).finally(() => {
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+        }
+      })
+      .finally(() => {
         setIsStartingCall(false);
       });
-    }
   };
 
-  const stopCall = () => {
+  const stopCall = async () => {
+    setIsEndingCall(true);
+    setIsLoading(true);
     if (vapiInstance) {
       vapiInstance.stop();
     }
+    const result = await GenerateReport();
+    setIsLoading(false);
+    setIsEndingCall(false);
+    toast.success("Your Report is generated!");
+    router.replace("/dashboard");
+  };
+
+  const GenerateReport = async () => {
+    const result = await axios.post("/api/medical-report", {
+      messages: messages,
+      sessionDetail: sessionDetail,
+      sessionId: sessionId,
+    });
+
+    console.log(result.data);
+    return result.data;
   };
 
   return (
@@ -199,7 +236,9 @@ const MedicalVoiceAgent = () => {
           </div>
         </div>
         <div className="text-lg font-medium text-gray-700">
-          {`${Math.floor(totalCallDuration / 60)}:${(totalCallDuration % 60).toString().padStart(2, '0')}`}
+          {`${Math.floor(callDuration / 60)}:${(callDuration % 60)
+            .toString()
+            .padStart(2, "0")}`}
         </div>
       </div>
 
@@ -237,22 +276,14 @@ const MedicalVoiceAgent = () => {
               <Skeleton className="h-32 w-32 rounded-full" />
             )}
 
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle className="text-lg text-center">
-                  Your consult
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-gray-600 text-sm">
-                  {sessionDetail?.notes || "No notes available"}
-                </p>
-              </CardContent>
-            </Card>
-
             {!isConnected ? (
               <motion.div variants={hoverVariants} whileHover="hover">
-                <Button className="w-full" size="lg" onClick={startCall} disabled={isStartingCall}>
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={startCall}
+                  disabled={isStartingCall}
+                >
                   {isStartingCall ? (
                     <LoaderCircle className="h-4 w-4 mr-2 animate-spin" />
                   ) : (
@@ -269,7 +300,13 @@ const MedicalVoiceAgent = () => {
                   size="lg"
                   onClick={stopCall}
                 >
-                  <PhoneOff className="h-4 w-4 mr-2" /> Disconnect
+                  {isEndingCall ? (
+                    <LoaderCircle className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <PhoneOff className="h-4 w-4 mr-2" />
+                  )}
+                  {isEndingCall ? "Ending..." : "Disconnect"}
+
                 </Button>
               </motion.div>
             )}
@@ -279,7 +316,7 @@ const MedicalVoiceAgent = () => {
             <CardHeader>
               <CardTitle>Consultation</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center h-[40vh] md:h-[65vh]">
+            <CardContent className="flex flex-col items-center justify-center h-[40vh] md:h-[65vh] overflow-y-auto">
               {messages.length === 0 ? (
                 <p className="text-gray-400 text-sm">
                   No transcript displayed.
@@ -289,7 +326,11 @@ const MedicalVoiceAgent = () => {
                   {messages?.map((msg, index) => (
                     <div
                       key={index}
-                      className={`flex ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
+                      className={`flex ${
+                        msg.role === "assistant"
+                          ? "justify-start"
+                          : "justify-end"
+                      }`}
                     >
                       <div
                         className={`max-w-xs md:max-w-md p-3 rounded-lg ${
@@ -298,13 +339,18 @@ const MedicalVoiceAgent = () => {
                             : "bg-green-100 text-green-800"
                         }`}
                       >
-                        <p className="font-medium">{msg.role}:</p>
                         <p>{msg.text}</p>
                       </div>
                     </div>
                   ))}
                   {liveTranscript && liveTranscript?.length > 0 && (
-                    <div className={`flex ${currentRole === "assistant" ? "justify-start" : "justify-end"}`}>
+                    <div
+                      className={`flex ${
+                        currentRole === "assistant"
+                          ? "justify-start"
+                          : "justify-end"
+                      }`}
+                    >
                       <div
                         className={`max-w-xs md:max-w-md p-3 rounded-lg ${
                           currentRole === "assistant"
@@ -312,7 +358,6 @@ const MedicalVoiceAgent = () => {
                             : "bg-green-100 text-green-800"
                         }`}
                       >
-                        <p className="font-medium">{currentRole}:</p>
                         <p>{liveTranscript}</p>
                       </div>
                     </div>

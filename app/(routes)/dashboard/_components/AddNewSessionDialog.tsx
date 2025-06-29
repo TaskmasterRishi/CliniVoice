@@ -26,6 +26,7 @@ export type Doctor = {
   description: string;
   agentPrompt: string;
   voiceId: string;
+  modelId : string;
   subscriptionRequired: boolean;
 }
 

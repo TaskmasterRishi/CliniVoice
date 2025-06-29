@@ -1,7 +1,7 @@
 import { db } from "@/config/db";
 import { sessionChatTable } from "@/config/schema";
 import { currentUser } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     const { notes, selectedDoctor } = await req.json();
     const user = await currentUser();
-    
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       })
       //@ts-ignore
       .returning(sessionChatTable);
-      
+
     return NextResponse.json(result[0]);
   } catch (e) {
     return NextResponse.json(
@@ -46,16 +46,28 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Bad Request" }, { status: 400 });
     }
 
-    const result = await db
-      .select()
-      .from(sessionChatTable)
-      .where(eq(sessionChatTable.sessionId, sessionId));
+    let result;
+    if (sessionId == "all") {
+      const email = user.primaryEmailAddress?.emailAddress;
+      if (!email) {
+        return NextResponse.json({ error: "Bad Request" }, { status: 400 });
+      }
+      result = await db
+        .select()
+        .from(sessionChatTable)
+        .where(eq(sessionChatTable.createdBy, email)).orderBy(desc(sessionChatTable.id));
+    } else {
+      result = await db
+        .select()
+        .from(sessionChatTable)
+        .where(eq(sessionChatTable.sessionId, sessionId));
 
-    if (!result.length) {
-      return NextResponse.json({ error: "Not Found" }, { status: 404 });
+      if (!result.length) {
+        return NextResponse.json({ error: "Not Found" }, { status: 404 });
+      }
     }
 
-    return NextResponse.json(result[0]);
+    return NextResponse.json(sessionId === "all" ? result : result[0]);
   } catch (e) {
     return NextResponse.json(
       { error: "Internal Server Error" },

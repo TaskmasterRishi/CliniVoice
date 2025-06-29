@@ -5,7 +5,8 @@ export const AIDoctorAgents = [
         description: "Helps with everyday health concerns and common symptoms.",
         image: "/doctor1.png",
         agentPrompt: "You are a friendly General Physician AI. Greet the user and quickly ask what symptoms they’re experiencing. Keep responses short and helpful.",
-        voiceId: "Will",
+        voiceId: "will",
+        modelId : "3a57f26a-1db6-4948-b55d-f14be827343c",
         subscriptionRequired: false
     },
     {
@@ -14,7 +15,8 @@ export const AIDoctorAgents = [
         description: "Expert in children's health, from babies to teens.",
         image: "/doctor2.png",
         agentPrompt: "You are a kind Pediatrician AI. Ask brief questions about the child’s health and share quick, safe suggestions.",
-        voiceId: "Charlie",
+        voiceId: "chris",
+        modelId: "6447c90a-5d50-4e06-849d-8db81803a359",
         subscriptionRequired: true
     },
     {
@@ -23,7 +25,8 @@ export const AIDoctorAgents = [
         description: "Handles skin issues like rashes, acne, or infections.",
         image: "/doctor3.png",
         agentPrompt: "You are a knowledgeable Dermatologist AI. Ask short questions about the skin issue and give simple, clear advice.",
-        voiceId: "Christopher",
+        voiceId: "sarge",
+        modelId : "4170c8a9-99ef-47ea-9c3b-8413803242ff",
         subscriptionRequired: true
     },
     {
@@ -32,7 +35,8 @@ export const AIDoctorAgents = [
         description: "Supports mental health and emotional well-being.",
         image: "/doctor4.png",
         agentPrompt: "You are a caring Psychologist AI. Ask how the user is feeling emotionally and give short, supportive tips.",
-        voiceId: "Luisa",
+        voiceId: "susan",
+        modelId : "277724ac-61e5-42dc-ab69-46f93eb7456f",
         subscriptionRequired: true
     },
     {
@@ -41,7 +45,7 @@ export const AIDoctorAgents = [
         description: "Provides advice on healthy eating and weight management.",
         image: "/doctor5.png",
         agentPrompt: "You are a motivating Nutritionist AI. Ask about current diet or goals and suggest quick, healthy tips.",
-        voiceId: "Balazs",
+        voiceId: "eileen",
         subscriptionRequired: true
     },
     {
@@ -50,7 +54,8 @@ export const AIDoctorAgents = [
         description: "Focuses on heart health and blood pressure issues.",
         image: "/doctor6.png",
         agentPrompt: "You are a calm Cardiologist AI. Ask about heart symptoms and offer brief, helpful advice.",
-        voiceId: "Emma",
+        voiceId: "charlotte",
+        modelId : "deb7c1ee-3d96-46c5-b287-1c3f3044c7ef",
         subscriptionRequired: true
     },
     {
@@ -59,7 +64,8 @@ export const AIDoctorAgents = [
         description: "Handles ear, nose, and throat-related problems.",
         image: "/doctor7.png",
         agentPrompt: "You are a friendly ENT AI. Ask quickly about ENT symptoms and give simple, clear suggestions.",
-        voiceId: "Olivia",
+        voiceId: "ayla",
+        modelId : "2f7a352b-4ee0-4d7a-a3f4-09fd59cb0790",
         subscriptionRequired: true
     },
     {
@@ -68,7 +74,8 @@ export const AIDoctorAgents = [
         description: "Helps with bone, joint, and muscle pain.",
         image: "/doctor8.png",
         agentPrompt: "You are an understanding Orthopedic AI. Ask where the pain is and give short, supportive advice.",
-        voiceId: "Jessica",
+        voiceId: "aaliyah",
+        modelId : "64a42c51-4cfa-44b0-9e84-02609903274d",
         subscriptionRequired: true
     },
     {
@@ -77,7 +84,8 @@ export const AIDoctorAgents = [
         description: "Cares for women’s reproductive and hormonal health.",
         image: "/doctor9.png",
         agentPrompt: "You are a respectful Gynecologist AI. Ask brief, gentle questions and keep answers short and reassuring.",
-        voiceId: "Pratama",
+        voiceId: "hudson",
+        modelId : "9e77f94f-804c-4062-afbd-1cfc5e3f10e3",
         subscriptionRequired: true
     },
     {
@@ -86,7 +94,8 @@ export const AIDoctorAgents = [
         description: "Handles oral hygiene and dental problems.",
         image: "/doctor10.png",
         agentPrompt: "You are a cheerful Dentist AI. Ask about the dental issue and give quick, calming suggestions.",
-        voiceId: "Edward",
+        voiceId: "atlas",
+        modelId : "a9ca3ede-4ecf-4e60-9190-303be1313592",
         subscriptionRequired: true
     }
 ];
