@@ -11,6 +11,8 @@ import {
 import { SessionDetail } from "../medical-agent/[sessionId]/page";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import moment from "moment"
+import ViewReportDialog from "./ViewReportDialog";
 
 type Props = {
   historyList: SessionDetail[];
@@ -31,7 +33,7 @@ const HistoryTable = ({ historyList, isLoading = false }: Props) => {
       <TableCaption className="text-lg font-semibold mb-4">Previous Consultations</TableCaption>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className="w-[100px] font-semibold text-gray-700">AI Medical Specialist</TableHead>
+          <TableHead className="w-[300px] font-semibold text-gray-700">AI Medical Specialist</TableHead>
           <TableHead className="font-semibold text-gray-700">Description</TableHead>
           <TableHead className="font-semibold text-gray-700">Date</TableHead>
           <TableHead className="text-right font-semibold text-gray-700">Action</TableHead>
@@ -43,18 +45,10 @@ const HistoryTable = ({ historyList, isLoading = false }: Props) => {
             <TableCell className="font-medium py-4">{record.selectedDoctor.specialist}</TableCell>
             <TableCell className="py-4">{record.notes}</TableCell>
             <TableCell className="py-4">
-              {new Date(record.createdOn).toLocaleString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+             {moment(new Date(record.createdOn)).fromNow()}
             </TableCell>
             <TableCell className="text-right py-4">
-              <Button variant="outline" className="hover:bg-blue-50 hover:text-blue-600">
-                View Report
-              </Button>
+              <ViewReportDialog record = {record}/>
             </TableCell>
           </TableRow>
         ))}

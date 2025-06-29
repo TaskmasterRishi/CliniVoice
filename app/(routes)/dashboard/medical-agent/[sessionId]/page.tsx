@@ -22,6 +22,7 @@ export type SessionDetail = {
   id: number;
   notes: string;
   sessionId: string;
+  conversation: string;
   report: JSON;
   selectedDoctor: Doctor;
   createdOn: string;

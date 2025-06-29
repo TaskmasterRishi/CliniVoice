@@ -4,26 +4,28 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Navbar, NavBody, NavItems, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from '@/components/ui/resizable-navbar'
 import { UserButton } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 
 const menuOptions = [
     {
         name: 'Home',
-        link: '/home'
+        link: '/dashboard'
     },
     {
         name: 'History',
-        link: '/history'
+        link: '/dashboard/history'
     },{
         name: 'Pricing',
-        link: '/pricing'
+        link: '/dashboard/billing'
     },{
         name: 'Profile',
-        link: '/profile'
+        link: '/dashboard/profile'
     },
 ]
 
 const AppHeader = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false)
+  const router = useRouter()
 
   return (
     <Navbar>
@@ -40,6 +42,7 @@ const AppHeader = () => {
         <motion.div
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
+          style={{ zIndex: 1 }}
         >
           <UserButton/>
         </motion.div>
@@ -74,19 +77,19 @@ const AppHeader = () => {
         </MobileNavHeader>
         <MobileNavMenu isOpen={isMobileNavOpen} onClose={() => setIsMobileNavOpen(false)}>
           {menuOptions.map((item, idx) => (
-            <motion.a 
+            <motion.div 
               key={idx} 
-              href={item.link} 
-              className="px-4 py-2 text-neutral-600 dark:text-neutral-300"
+              className="px-4 py-2 text-neutral-600 dark:text-neutral-300 cursor-pointer"
               whileHover={{ 
                 scale: 1.05,
                 backgroundColor: 'rgba(0,0,0,0.05)',
                 paddingLeft: '1.5rem'
               }}
               transition={{ type: 'spring', stiffness: 300 }}
+              onClick={() => router.push(item.link)}
             >
               {item.name}
-            </motion.a>
+            </motion.div>
           ))}
         </MobileNavMenu>
       </MobileNav>

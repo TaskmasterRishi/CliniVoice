@@ -2,9 +2,9 @@ export const AIDoctorAgents = [
     {
         id: 1,
         specialist: "General Physician",
-        description: "Helps with everyday health concerns and common symptoms.",
+        description: "Your first stop for general health concerns, offering expert advice on common symptoms and everyday wellness.",
         image: "/doctor1.png",
-        agentPrompt: "You are a friendly General Physician AI. Greet the user and quickly ask what symptoms they’re experiencing. Keep responses short and helpful.",
+        agentPrompt: "You are a friendly General Physician AI. Greet the user and quickly ask what symptoms they're experiencing. Keep responses short and helpful.",
         voiceId: "will",
         modelId : "3a57f26a-1db6-4948-b55d-f14be827343c",
         subscriptionRequired: false
@@ -12,9 +12,9 @@ export const AIDoctorAgents = [
     {
         id: 2,
         specialist: "Pediatrician",
-        description: "Expert in children's health, from babies to teens.",
+        description: "Specialized care for your little ones, providing gentle guidance on childhood health from infancy through adolescence.",
         image: "/doctor2.png",
-        agentPrompt: "You are a kind Pediatrician AI. Ask brief questions about the child’s health and share quick, safe suggestions.",
+        agentPrompt: "You are a kind Pediatrician AI. Ask brief questions about the child's health and share quick, safe suggestions.",
         voiceId: "chris",
         modelId: "6447c90a-5d50-4e06-849d-8db81803a359",
         subscriptionRequired: true
@@ -22,7 +22,7 @@ export const AIDoctorAgents = [
     {
         id: 3,
         specialist: "Dermatologist",
-        description: "Handles skin issues like rashes, acne, or infections.",
+        description: "Expert solutions for skin health, addressing concerns from acne to rashes with personalized care.",
         image: "/doctor3.png",
         agentPrompt: "You are a knowledgeable Dermatologist AI. Ask short questions about the skin issue and give simple, clear advice.",
         voiceId: "sarge",
@@ -32,7 +32,7 @@ export const AIDoctorAgents = [
     {
         id: 4,
         specialist: "Psychologist",
-        description: "Supports mental health and emotional well-being.",
+        description: "Compassionate support for mental wellbeing, helping you navigate emotional challenges with professional insight.",
         image: "/doctor4.png",
         agentPrompt: "You are a caring Psychologist AI. Ask how the user is feeling emotionally and give short, supportive tips.",
         voiceId: "susan",
@@ -42,7 +42,7 @@ export const AIDoctorAgents = [
     {
         id: 5,
         specialist: "Nutritionist",
-        description: "Provides advice on healthy eating and weight management.",
+        description: "Personalized dietary guidance to help you achieve your health goals through balanced nutrition.",
         image: "/doctor5.png",
         agentPrompt: "You are a motivating Nutritionist AI. Ask about current diet or goals and suggest quick, healthy tips.",
         voiceId: "eileen",
@@ -51,7 +51,7 @@ export const AIDoctorAgents = [
     {
         id: 6,
         specialist: "Cardiologist",
-        description: "Focuses on heart health and blood pressure issues.",
+        description: "Specialized heart health expertise, offering guidance on cardiovascular wellness and blood pressure management.",
         image: "/doctor6.png",
         agentPrompt: "You are a calm Cardiologist AI. Ask about heart symptoms and offer brief, helpful advice.",
         voiceId: "charlotte",
@@ -61,7 +61,7 @@ export const AIDoctorAgents = [
     {
         id: 7,
         specialist: "ENT Specialist",
-        description: "Handles ear, nose, and throat-related problems.",
+        description: "Comprehensive care for ear, nose and throat concerns, helping you breathe and hear better.",
         image: "/doctor7.png",
         agentPrompt: "You are a friendly ENT AI. Ask quickly about ENT symptoms and give simple, clear suggestions.",
         voiceId: "ayla",
@@ -71,7 +71,7 @@ export const AIDoctorAgents = [
     {
         id: 8,
         specialist: "Orthopedic",
-        description: "Helps with bone, joint, and muscle pain.",
+        description: "Expert relief for musculoskeletal concerns, helping you move comfortably and pain-free.",
         image: "/doctor8.png",
         agentPrompt: "You are an understanding Orthopedic AI. Ask where the pain is and give short, supportive advice.",
         voiceId: "aaliyah",
@@ -81,7 +81,7 @@ export const AIDoctorAgents = [
     {
         id: 9,
         specialist: "Gynecologist",
-        description: "Cares for women’s reproductive and hormonal health.",
+        description: "Dedicated women's health specialist, providing confidential care for reproductive and hormonal needs.",
         image: "/doctor9.png",
         agentPrompt: "You are a respectful Gynecologist AI. Ask brief, gentle questions and keep answers short and reassuring.",
         voiceId: "hudson",
@@ -91,7 +91,7 @@ export const AIDoctorAgents = [
     {
         id: 10,
         specialist: "Dentist",
-        description: "Handles oral hygiene and dental problems.",
+        description: "Comprehensive oral care guidance, helping you maintain a healthy smile and address dental concerns.",
         image: "/doctor10.png",
         agentPrompt: "You are a cheerful Dentist AI. Ask about the dental issue and give quick, calming suggestions.",
         voiceId: "atlas",

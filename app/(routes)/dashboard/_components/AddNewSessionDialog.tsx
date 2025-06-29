@@ -18,6 +18,7 @@ import { CardBody, CardContainer } from "./AiDoctorAgentCard";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
 export type Doctor = {
   id: number;
@@ -39,13 +40,19 @@ const AddNewSessionDialog = () => {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const router = useRouter();
 
+  const {has} = useAuth();
+  const paidUser = has && has({plan : "pro"})
+  console.log(paidUser);
+
   const onClickNext = async () => {
     setLoading(true);
     try {
       const result = await axios.post("/api/suggest-doctors", {
         notes: note,
       });
-      setSuggestedDoctors(result.data);
+      // Filter out premium doctors if the user is not paid
+      const filteredDoctors = paidUser ? result.data : result.data.filter((doctor: Doctor) => !doctor.subscriptionRequired);
+      setSuggestedDoctors(filteredDoctors);
     } catch (error) {
       console.error("Error suggesting doctors:", error);
     } finally {
