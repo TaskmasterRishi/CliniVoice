@@ -150,29 +150,7 @@ You can customize various aspects of CliniVoice:
 - **Medical Knowledge Base**: Extend the knowledge base in `config/schema`
 
 ### Payment Integration
-
-To set up Stripe payments:
-
-1. Create a Stripe account at [stripe.com](https://stripe.com)
-2. Add your Stripe API keys to `.env`
-3. Install the Stripe SDK:
-   ```bash
-   npm install stripe @stripe/stripe-js
-   ```
-4. Configure the Stripe client in your application
-5. Create payment components using Stripe Elements
-
-Example usage:
-
-```javascript
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
-```
-
-For full implementation details, refer to the [Stripe documentation](https://stripe.com/docs).
+strip with clerk is used here for payment integration
 
 ## 🧪 Testing
 
