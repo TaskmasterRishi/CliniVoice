@@ -4,17 +4,11 @@
 
 CliniVoice is an intelligent medical voice assistant built with Next.js that leverages cutting-edge artificial intelligence to provide voice-enabled healthcare support. This application combines modern web technologies with advanced AI models including OpenAI GPT-4.1 and Google Gemini 2.5 Flash, along with professional voice synthesis through Vapi and Assembly AI for accurate speech recognition.
 
-![CliniVoice](./logo.png)
-
 <div align="center">
-  <img src="./logo.png" alt="CliniVoice Logo" width="200"/>
+  <img src="./public/logo.png" alt="CliniVoice Logo" width="200"/>
 </div>
 
 ## 📸 Screenshots
-
-### Main Interface
-![Main Dashboard](./assets/screenshots/main-dashboard.png)
-*CliniVoice main dashboard with voice interaction interface*
 
 <div align="center">
   <img src="./assets/1.png" alt="Voice Interaction" width="600"/>
@@ -30,14 +24,13 @@ CliniVoice is an intelligent medical voice assistant built with Next.js that lev
 </div>
 *Real-time voice conversation with medical AI assistant*
 
-
-*Responsive design optimized for mobile devices*
+_Responsive design optimized for mobile devices_
 
 ## ✨ Features
 
 - **🎙️ Voice Recognition**: Advanced speech-to-text powered by Assembly AI for accurate medical terminology recognition
 - **🗣️ Voice Synthesis**: Professional voice generation using Vapi for natural conversational experience
-- **🤖 Dual AI Processing**: 
+- **🤖 Dual AI Processing**:
   - OpenAI GPT-4.1 for complex medical reasoning and analysis
   - Google Gemini 2.5 Flash for rapid response and real-time processing
 - **💬 Conversational Interface**: Natural language processing for seamless communication
@@ -53,18 +46,21 @@ CliniVoice is an intelligent medical voice assistant built with Next.js that lev
 ### Prerequisites
 
 Ensure you have the following installed on your system:
+
 - Node.js (v18.0 or higher)
 - npm, yarn, pnpm, or bun package manager
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/TaskmasterRishi/CliniVoice.git
    cd CliniVoice
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -76,33 +72,19 @@ Ensure you have the following installed on your system:
    ```
 
 3. **Set up environment variables**
-   ```bash
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
-NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
-
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
-
-OPEN_ROUTER_API_KEY=
-
-NEXT_PUBLIC_VAPI_PUBLIC_KEY=
-   ```
+<pre lang="markdown"> ### 3. Set up environment variables ```bash NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY= CLERK_SECRET_KEY= NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/ NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/ OPEN_ROUTER_API_KEY= NEXT_PUBLIC_VAPI_PUBLIC_KEY= ``` </pre>
 
 4. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   # or
-   bun dev
-   ```
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
@@ -111,7 +93,7 @@ NEXT_PUBLIC_VAPI_PUBLIC_KEY=
 
 - **Frontend**: Next.js 14, React, TypeScript
 - **Styling**: Tailwind CSS / CSS Modules
-- **AI Models**: 
+- **AI Models**:
   - OpenAI GPT-4.1 for advanced medical reasoning
   - Google Gemini 2.5 Flash for rapid response processing
 - **Voice Technology**:
@@ -122,16 +104,17 @@ NEXT_PUBLIC_VAPI_PUBLIC_KEY=
 - **Database**: (Specify your database choice)
 - **Payment Processing**: Stripe for secure transactions
 
-
 ## 🎯 Usage
 
 ### Basic Voice Interaction
+
 1. Click the microphone button to start voice input
 2. Speak your medical query or concern
 3. Wait for AI processing and voice response
 4. Continue the conversation naturally
 
 ### Example Interactions
+
 - "What are the symptoms of flu?"
 - "Can you help me understand my medication schedule?"
 - "I have a headache, what should I do?"
@@ -144,7 +127,6 @@ NEXT_PUBLIC_VAPI_PUBLIC_KEY=
 - **Data Privacy**: All interactions are processed securely, but users should be mindful of sharing sensitive personal health information.
 
 ## 🔧 Configuration
-
 
 ### Customization
 
@@ -170,10 +152,13 @@ To set up Stripe payments:
 5. Create payment components using Stripe Elements
 
 Example usage:
-```javascript
-import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+```javascript
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 ```
 
 For full implementation details, refer to the [Stripe documentation](https://stripe.com/docs).
@@ -201,6 +186,7 @@ yarn test:e2e
 ## 📦 Building for Production
 
 1. **Build the application**
+
    ```bash
    npm run build
    # or
@@ -236,8 +222,6 @@ The easiest way to deploy CliniVoice is using [Vercel](https://vercel.com/new?ut
 - Update documentation for any API changes
 - Follow the existing code style and formatting
 
-
-
 ## 🙏 Acknowledgments
 
 - **Next.js Team** for the amazing framework
@@ -264,7 +248,6 @@ The easiest way to deploy CliniVoice is using [Vercel](https://vercel.com/new?ut
 
 <div align="center">
 
-**Built with ❤️ by TaskmasterRishi**
-
+**Built by TaskmasterRishi**
 
 </div>
