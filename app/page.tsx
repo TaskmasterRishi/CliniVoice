@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import Billing from "./(routes)/dashboard/billing/page";
+import { Features } from "@/components/Features";
 
 export default function Home() {
   return (
@@ -103,6 +104,7 @@ export default function Home() {
               height={1000}
               width={1000}
             /> */}
+            <Features/>
           </div>
         </motion.div>
       </div>

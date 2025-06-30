@@ -17,10 +17,7 @@ const menuOptions = [
     },{
         name: 'Pricing',
         link: '/dashboard/billing'
-    },{
-        name: 'Profile',
-        link: '/dashboard/profile'
-    },
+    }
 ]
 
 const AppHeader = () => {
